@@ -1,0 +1,368 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+
+  /* Enhanced sunset-inspired luxury color palette with additional custom properties */
+  --color-background: 254 252 250; /* Warm cream */
+  --color-foreground: 44 24 16; /* Deep chocolate brown */
+
+  --color-primary: 255 107 53; /* Sunset coral orange */
+  --color-primary-foreground: 254 252 250;
+
+  --color-secondary: 232 168 124; /* Warm rose gold */
+  --color-secondary-foreground: 44 24 16;
+
+  --color-accent: 212 175 55; /* Sunset gold */
+  --color-accent-foreground: 44 24 16;
+
+  --color-muted: 255 243 235; /* Soft peach */
+  --color-muted-foreground: 120 83 68;
+
+  --color-card: 255 255 255;
+  --color-card-foreground: 44 24 16;
+
+  --color-border: 255 228 210;
+
+  /* Additional sunset colors */
+  --color-sunset-coral: 255 107 53;
+  --color-sunset-rose: 255 180 162;
+  --color-sunset-amber: 247 147 30;
+  --color-sunset-gold: 212 175 55;
+  --color-sunset-peach: 255 228 210;
+
+  --color-input: oklch(0.922 0 0);
+  --color-ring: oklch(0.708 0 0);
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --color-sidebar: oklch(0.985 0 0);
+  --color-sidebar-foreground: oklch(0.145 0 0);
+  --color-sidebar-primary: oklch(0.205 0 0);
+  --color-sidebar-primary-foreground: oklch(0.985 0 0);
+  --color-sidebar-accent: oklch(0.97 0 0);
+  --color-sidebar-accent-foreground: oklch(0.205 0 0);
+  --color-sidebar-border: oklch(0.922 0 0);
+  --color-sidebar-ring: oklch(0.708 0 0);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsive utilities */
+@layer utilities {
+  /* Touch-friendly tap targets */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Responsive container padding */
+  .container-padding {
+    @apply px-4 sm:px-6 md:px-8 lg:px-12;
+  }
+
+  /* Responsive section spacing */
+  .section-spacing {
+    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32;
+  }
+
+  /* Responsive text sizes */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  .text-responsive-2xl {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  .text-responsive-3xl {
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  /* Responsive grid gaps */
+  .gap-responsive {
+    @apply gap-4 sm:gap-6 md:gap-8;
+  }
+
+  /* Mobile-optimized card */
+  .card-mobile {
+    @apply p-4 sm:p-6 md:p-8;
+  }
+}
+
+/* Mobile-first media query helpers */
+@media (max-width: 640px) {
+  /* Ensure text is readable on small screens */
+  body {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Optimize touch targets */
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Reduce animation complexity on mobile for performance */
+  .animate-float,
+  .animate-float-delayed,
+  .animate-float-slow {
+    animation-duration: 6s;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-height: 600px) and (orientation: landscape) {
+  .h-screen {
+    min-height: 600px;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sunsetGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3), 0 0 40px rgba(232, 168, 124, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.5), 0 0 60px rgba(232, 168, 124, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.animate-sunset-glow {
+  animation: sunsetGlow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Parallax effect */
+.parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sunset-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 53, 0.9) 0%,
+    rgba(232, 168, 124, 0.8) 50%,
+    rgba(212, 175, 55, 0.7) 100%
+  );
+}
+
+.text-sunset-gradient {
+  background: linear-gradient(135deg, #ff6b35 0%, #e8a87c 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Added additional sunset-themed utility classes */
+.bg-sunset-coral {
+  background-color: rgb(var(--color-sunset-coral));
+}
+
+.bg-sunset-rose {
+  background-color: rgb(var(--color-sunset-rose));
+}
+
+.bg-sunset-amber {
+  background-color: rgb(var(--color-sunset-amber));
+}
+
+.bg-sunset-gold {
+  background-color: rgb(var(--color-sunset-gold));
+}
+
+.text-sunset-coral {
+  color: rgb(var(--color-sunset-coral));
+}
+
+.text-sunset-rose {
+  color: rgb(var(--color-sunset-rose));
+}
+
+.text-sunset-amber {
+  color: rgb(var(--color-sunset-amber));
+}
+
+.text-sunset-gold {
+  color: rgb(var(--color-sunset-gold));
+}
+
+.border-sunset-coral {
+  border-color: rgb(var(--color-sunset-coral));
+}
