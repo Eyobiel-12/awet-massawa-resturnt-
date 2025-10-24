@@ -17,7 +17,10 @@ export const metadata: Metadata = {
   title: "Massawa Restaurant | Authentic Ethiopian & Eritrean Fine Dining",
   description:
     "Experience the authentic flavors of Ethiopia and Eritrea in an atmosphere of refined elegance. Award-winning cuisine with family heritage recipes.",
-    generator: 'v0.app'
+  generator: 'v0.app',
+  verification: {
+    google: 'RVRrR7vz4FFR1eJvkHJbcfJdHwgKUNHR9eWpbGW8JcU'
+  }
 }
 
 export default function RootLayout({
