@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nieuwe Reservering - Massawa Restaurant</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    
+    <!-- Main Container -->
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        
+        <!-- Header -->
+        <div style="background-color: #d97706; padding: 30px; text-align: center;">
+            <div style="background-color: white; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: #d97706;">
+                M
+            </div>
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">
+                Massawa Restaurant
+            </h1>
+            <p style="color: #fef3c7; margin: 10px 0 0 0; font-size: 16px;">
+                Where Tradition Meets the Table
+            </p>
+        </div>
+        
+        <!-- Success Banner -->
+        <div style="background-color: #10b981; padding: 20px; text-align: center;">
+            <h2 style="color: white; margin: 0; font-size: 24px;">
+                ✅ Nieuwe Reservering!
+            </h2>
+            <p style="color: #d1fae5; margin: 10px 0 0 0; font-size: 16px;">
+                Een nieuwe reservering is ontvangen via de website
+            </p>
+        </div>
+        
+        <!-- Content -->
+        <div style="padding: 30px;">
+            
+            <!-- Customer Info -->
+            <div style="background-color: #f8fafc; border-left: 4px solid #d97706; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #374151; margin: 0 0 15px 0; font-size: 18px;">
+                    👤 Klantgegevens
+                </h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold; width: 100px;">Naam:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{from_name}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold;">Email:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{from_email}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold;">Telefoon:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{phone}}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Reservation Details -->
+            <div style="background-color: #f8fafc; border-left: 4px solid #d97706; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #374151; margin: 0 0 15px 0; font-size: 18px;">
+                    📅 Reservering Details
+                </h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold; width: 100px;">Datum:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{date}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold;">Tijd:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{time}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #6b7280; font-weight: bold;">Aantal gasten:</td>
+                        <td style="padding: 8px 0; color: #111827;">{{guests}} gasten</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Special Requests -->
+            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #92400e; margin: 0 0 15px 0; font-size: 18px;">
+                    💬 Speciale Verzoeken
+                </h3>
+                <p style="color: #451a03; margin: 0; font-style: italic;">
+                    {{message}}
+                </p>
+            </div>
+            
+            <!-- Confirm Button -->
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="http://localhost:3000/confirm?name={{from_name}}&email={{from_email}}&date={{date}}&time={{time}}&guests={{guests}}&message={{message}}" 
+                   style="display: inline-block; background-color: #10b981; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    ✅ Bevestig Reservering
+                </a>
+            </div>
+            
+            <!-- Restaurant Info -->
+            <div style="background-color: #1f2937; color: white; padding: 25px; text-align: center; border-radius: 8px;">
+                <h3 style="color: #fbbf24; margin: 0 0 20px 0; font-size: 20px;">
+                    🏪 Massawa Restaurant
+                </h3>
+                <p style="margin: 8px 0; font-size: 15px;">
+                    Amsterdamsestraatweg 54<br>
+                    3513 AG Utrecht, Netherlands
+                </p>
+                <p style="margin: 8px 0; font-size: 15px;">
+                    📞 +31 20 123 4567<br>
+                    ✉️ info@massawa-restaurant.nl
+                </p>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 14px;">
+                    <strong>Openingstijden:</strong><br>
+                    Dinsdag - Zondag: 17:00 - 23:00<br>
+                    Maandag: Gesloten<br>
+                    <em>Keuken sluit om 22:00</em>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Footer -->
+        <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+            <p style="color: #6b7280; margin: 0; font-size: 13px; line-height: 1.6;">
+                Deze reservering is automatisch gegenereerd via de Massawa Restaurant website.<br>
+                Beantwoord deze email om contact op te nemen met de klant.<br><br>
+                <strong>Authentic Ethiopian & Eritrean Fine Dining</strong>
+            </p>
+        </div>
+        
+    </div>
+</body>
+</html>
+
