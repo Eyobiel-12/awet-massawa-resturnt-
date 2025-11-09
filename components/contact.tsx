@@ -9,7 +9,7 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Phone",
-    details: ["+31 20 123 4567", "+31 6 12345678"],
+    details: ["+31 6 24834382"],
   },
   {
     icon: Mail,

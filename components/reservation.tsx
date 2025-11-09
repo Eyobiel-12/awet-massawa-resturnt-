@@ -409,7 +409,7 @@ export function Reservation() {
                         <Input
                           id="phone"
                           type="tel"
-                          placeholder="+31 6 12345678"
+                          placeholder="+31 6 24834382"
                           value={formData.phone}
                           onChange={(e) => handleFieldChange("phone", e.target.value)}
                           onFocus={() => setFocusedField("phone")}

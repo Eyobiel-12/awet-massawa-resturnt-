@@ -543,10 +543,15 @@ export function Menu() {
                   {category.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="group relative bg-card/80 backdrop-blur-sm rounded-2xl p-8 border border-border/50 hover:border-sunset-amber/60 transition-all duration-700 hover:shadow-2xl hover:shadow-sunset-amber/20 hover:-translate-y-3 animate-fade-in-up overflow-hidden"
+                      className="group relative bg-gradient-to-br from-card via-card to-card/90 backdrop-blur-md rounded-3xl p-8 border-2 border-border/40 hover:border-sunset-amber transition-all duration-700 hover:shadow-2xl hover:shadow-sunset-amber/30 hover:-translate-y-2 animate-fade-in-up overflow-hidden"
                       style={{ animationDelay: `${itemIndex * 50}ms` }}
                     >
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-sunset-amber/0 via-sunset-coral/0 to-sunset-rose/0 group-hover:from-sunset-amber/8 group-hover:via-sunset-coral/8 group-hover:to-sunset-rose/8 transition-all duration-700 pointer-events-none" />
+                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-sunset-amber/0 via-sunset-coral/0 to-sunset-rose/0 group-hover:from-sunset-amber/10 group-hover:via-sunset-coral/10 group-hover:to-sunset-rose/10 transition-all duration-700 pointer-events-none" />
+                      
+                      {/* Shimmer effect */}
+                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-2000 ease-in-out" />
+                      </div>
 
                       <div className="absolute top-0 left-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-all duration-500">
                         <div className="absolute top-4 left-4 w-8 h-0.5 bg-gradient-to-r from-sunset-amber to-transparent" />
@@ -561,7 +566,7 @@ export function Menu() {
                         {/* Header with Name and Price */}
                         <div className="flex items-start justify-between gap-4 mb-4">
                           <div className="flex-1 space-y-2">
-                            <h4 className="font-serif text-2xl font-bold text-foreground leading-tight group-hover:text-sunset-amber transition-colors duration-500">
+                            <h4 className="font-serif text-2xl font-bold bg-gradient-to-r from-foreground via-foreground to-sunset-amber bg-clip-text text-transparent group-hover:from-foreground group-hover:via-sunset-amber group-hover:to-sunset-coral transition-all duration-700 bg-[length:200%_auto] animate-gradient-text leading-tight">
                               {item.name}
                             </h4>
                             {item.nameAmharic && (
@@ -571,7 +576,7 @@ export function Menu() {
                             )}
                           </div>
                           <div className="flex-shrink-0">
-                            <span className="font-serif text-2xl font-bold text-sunset-amber group-hover:scale-110 inline-block transition-transform duration-500">
+                            <span className="font-serif text-2xl font-bold bg-gradient-to-br from-sunset-amber via-sunset-coral to-sunset-amber bg-clip-text text-transparent group-hover:scale-110 inline-block transition-transform duration-500">
                               {item.price}
                             </span>
                           </div>
@@ -579,18 +584,18 @@ export function Menu() {
 
                         {/* Description */}
                         {item.description && (
-                          <p className="text-muted-foreground leading-relaxed mb-4 text-base group-hover:text-foreground/80 transition-colors duration-500">
+                          <p className="text-muted-foreground leading-relaxed mb-4 text-base group-hover:text-foreground/90 transition-colors duration-500 line-clamp-3">
                             {item.description}
                           </p>
                         )}
 
                         {item.badges && item.badges.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border/30 group-hover:border-sunset-amber/30 transition-colors duration-500">
+                          <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border/40 group-hover:border-sunset-amber/40 transition-colors duration-500">
                             {item.badges.map((badge, badgeIndex) => (
                               <Badge
                                 key={badgeIndex}
                                 variant="outline"
-                                className="bg-background/50 text-foreground border-sunset-amber/20 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 transition-all duration-500 hover:bg-sunset-amber/10 hover:border-sunset-amber/40 hover:scale-105 hover:shadow-md"
+                                className="bg-gradient-to-br from-background to-background/80 backdrop-blur-sm text-foreground border-sunset-amber/30 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 transition-all duration-500 hover:bg-sunset-amber/15 hover:border-sunset-amber/50 hover:scale-105 hover:shadow-lg hover:shadow-sunset-amber/20"
                               >
                                 {badge.toLowerCase().includes("vegetarian") && (
                                   <Leaf className="w-3.5 h-3.5 text-green-600 animate-pulse-slow" />
@@ -609,13 +614,19 @@ export function Menu() {
                         )}
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/60 transition-all duration-700 rounded-b-2xl">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/80 transition-all duration-700 rounded-b-3xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                       </div>
 
-                      <div className="absolute top-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-sunset-amber rounded-full animate-ping" />
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-sunset-amber rounded-full" />
+                      {/* Decorative corner accents */}
+                      <div className="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-6 right-6 w-3 h-3 bg-gradient-to-br from-sunset-amber to-sunset-coral rounded-full animate-ping" />
+                        <div className="absolute top-6 right-6 w-3 h-3 bg-gradient-to-br from-sunset-amber to-sunset-coral rounded-full" />
+                      </div>
+                      
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                        <div className="absolute inset-0 bg-gradient-to-br from-sunset-amber/5 via-transparent to-sunset-coral/5 rounded-3xl blur-xl" />
                       </div>
                     </div>
                   ))}
@@ -904,6 +915,23 @@ export function Menu() {
           100% {
             background-position: 0% 50%;
           }
+        }
+
+        @keyframes gradient-text {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .animate-gradient-text {
+          animation: gradient-text 3s ease infinite;
+          background-size: 200% auto;
         }
 
         .animate-fade-in-up {
