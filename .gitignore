@@ -28,3 +28,6 @@ next-env.d.ts.env.local
 
 # data storage
 /data/reservations.json
+
+# pnpm (we use npm)
+pnpm-lock.yaml
