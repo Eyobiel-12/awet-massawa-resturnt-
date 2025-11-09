@@ -178,6 +178,26 @@ export function Reservation() {
 
       console.log("[v0] Email sent successfully:", response)
 
+      // Save reservation to database
+      try {
+        await fetch("/api/reservations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            date: formData.date,
+            time: formData.time,
+            guests: formData.guests,
+            message: formData.message || "",
+          }),
+        })
+      } catch (error) {
+        console.error("Error saving reservation:", error)
+        // Don't fail the form submission if saving fails
+      }
+
       setSubmitStatus("success")
 
       setTimeout(() => {
