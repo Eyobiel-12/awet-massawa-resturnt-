@@ -48,7 +48,7 @@ export function Reservation() {
     open: "17:00",
     close: "23:00",
     kitchenClose: "22:00",
-    closedDays: ["monday"]
+    closedDays: [] // Open 7 days a week
   }
 
   // Validation functions
@@ -63,12 +63,16 @@ export function Reservation() {
       return "Je kunt geen reservering maken voor een datum in het verleden"
     }
     
-    const dayOfWeek = selectedDate.getDay()
-    const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    // Check if date is more than 7 days in the future
+    const maxDate = new Date(today)
+    maxDate.setDate(maxDate.getDate() + 7)
+    maxDate.setHours(23, 59, 59, 999)
     
-    if (BUSINESS_HOURS.closedDays.includes(dayNames[dayOfWeek])) {
-      return "Het restaurant is gesloten op maandag"
+    if (selectedDate > maxDate) {
+      return "Reserveringen kunnen alleen worden gemaakt voor de komende 7 dagen"
     }
+    
+    // Restaurant is open 7 days a week - no closed days check needed
     
     // Check if booking is at least 2 hours in advance
     const now = new Date()
@@ -544,6 +548,11 @@ export function Reservation() {
                           onBlur={() => setFocusedField(null)}
                           required
                           min={new Date().toISOString().split('T')[0]}
+                          max={(() => {
+                            const maxDate = new Date()
+                            maxDate.setDate(maxDate.getDate() + 7)
+                            return maxDate.toISOString().split('T')[0]
+                          })()}
                           className={`h-12 border-2 transition-all duration-300 focus:shadow-lg bg-white/50 dark:bg-background/50 backdrop-blur-sm hover:bg-white/70 focus:scale-[1.01] ${
                             validationErrors.date 
                               ? "border-red-500 focus:border-red-500 focus:shadow-red-500/20" 
