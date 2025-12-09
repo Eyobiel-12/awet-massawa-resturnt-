@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     const supplied =
       request.headers.get("authorization") ??
       request.headers.get("x-retell-webhook-secret") ??
+      request.headers.get("x-vapi-webhook-secret") ??
       ""
     const normalized = supplied.startsWith("Bearer ")
       ? supplied.slice(7)

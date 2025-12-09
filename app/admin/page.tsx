@@ -15,6 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -118,6 +126,8 @@ export default function AdminPage() {
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [showCommandPalette, setShowCommandPalette] = useState(false)
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const { toast } = useToast()
 
   // Keyboard shortcuts
@@ -206,6 +216,16 @@ export default function AdminPage() {
       }
     }
   }, [authenticated, autoRefresh])
+
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileFiltersOpen(false)
+      return
+    }
+    if (["table", "kanban", "analytics"].includes(viewMode)) {
+      setViewMode("cards")
+    }
+  }, [isMobile, viewMode])
 
   const sendConfirmationEmail = async (reservation: Reservation) => {
     try {
@@ -532,6 +552,97 @@ export default function AdminPage() {
     { name: "Geannuleerd", value: stats.cancelled, color: "#ef4444" },
   ]
 
+  const advancedFiltersContent = (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="flex items-center gap-2">
+        <label className="text-sm text-slate-400 whitespace-nowrap">Sorteer op:</label>
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as "date" | "name" | "created")}>
+          <SelectTrigger className="bg-slate-800/50 border-slate-700/50 text-white">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-slate-800 border-slate-700">
+            <SelectItem value="date">Datum</SelectItem>
+            <SelectItem value="name">Naam</SelectItem>
+            <SelectItem value="created">Aangemaakt</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          className="text-slate-400 hover:text-white"
+        >
+          {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+        </Button>
+      </div>
+      <Input
+        type="date"
+        placeholder="Van datum"
+        value={dateRange.from}
+        onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+        className="bg-slate-800/50 border-slate-700/50 text-white"
+      />
+      <Input
+        type="date"
+        placeholder="Tot datum"
+        value={dateRange.to}
+        onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+        className="bg-slate-800/50 border-slate-700/50 text-white"
+      />
+      <Button
+        variant="outline"
+        onClick={() => setDateRange({ from: "", to: "" })}
+        className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
+      >
+        <X className="w-4 h-4 mr-2" />
+        Reset
+      </Button>
+    </div>
+  )
+
+  const bulkActionsContent =
+    selectedReservations.size > 0 ? (
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/40">
+          {selectedReservations.size} geselecteerd
+        </Badge>
+        <Button
+          size="sm"
+          onClick={() => bulkUpdateStatus("confirmed")}
+          className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
+        >
+          <CheckCircle2 className="w-4 h-4 mr-2" />
+          Bevestig alle
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => bulkUpdateStatus("cancelled")}
+          className="border-red-500/50 text-red-400 hover:bg-red-500/20"
+        >
+          <XCircle className="w-4 h-4 mr-2" />
+          Annuleer alle
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={bulkDelete}
+          className="border-red-500/50 text-red-400 hover:bg-red-500/20"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          Verwijder alle
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setSelectedReservations(new Set())}
+          className="text-slate-400"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+    ) : null
+
   const toggleSelection = (id: string) => {
     const newSelection = new Set(selectedReservations)
     if (newSelection.has(id)) {
@@ -623,7 +734,8 @@ export default function AdminPage() {
 
       <main className="container mx-auto px-6 py-8 max-w-7xl">
         {/* Advanced Stats Grid with Animations */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+        <div className="-mx-2 mb-8 overflow-x-auto pb-4 md:mx-0">
+          <div className="min-w-[680px] grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           <Card className="col-span-2 md:col-span-1 border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl shadow-2xl hover:shadow-amber-500/20 transition-all duration-500 hover:scale-105 hover:border-amber-500/50 group">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -715,13 +827,14 @@ export default function AdminPage() {
             </CardContent>
           </Card>
         </div>
+        </div>
 
         {/* Advanced Search and Filters */}
         <Card className="mb-6 border-slate-800/50 bg-slate-900/60 backdrop-blur-xl shadow-2xl">
           <CardContent className="p-6">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col lg:flex-row gap-4">
-                <div className="relative flex-1">
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                <div className="relative flex-1 w-full">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <Input
                     placeholder="Zoek op naam, email, telefoon, bericht... (⌘F)"
@@ -730,16 +843,44 @@ export default function AdminPage() {
                     className="pl-12 h-12 bg-slate-800/50 border-slate-700/50 text-white placeholder:text-slate-500 focus:border-amber-500/50 focus:ring-amber-500/20"
                   />
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => setShowFilters(!showFilters)}
-                    variant="outline"
-                    className="h-12 bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
-                  >
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filters
-                    {showFilters ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
-                  </Button>
+                <div className="flex flex-wrap gap-2 md:flex-nowrap md:justify-end">
+                  {isMobile ? (
+                    <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+                      <SheetTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="h-12 bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50 flex-1 md:flex-none"
+                        >
+                          <Filter className="w-4 h-4 mr-2" />
+                          Filters
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent side="bottom" className="bg-slate-900/95 border-t border-slate-800 text-white">
+                        <SheetHeader className="pb-0">
+                          <SheetTitle>Filters & sortering</SheetTitle>
+                          <SheetDescription>Pas de resultaten aan voor dit apparaat</SheetDescription>
+                        </SheetHeader>
+                        <div className="space-y-6 p-4 pt-0">
+                          {advancedFiltersContent}
+                          {bulkActionsContent && (
+                            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/60 p-4 space-y-3">
+                              {bulkActionsContent}
+                            </div>
+                          )}
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                  ) : (
+                    <Button
+                      onClick={() => setShowFilters(!showFilters)}
+                      variant="outline"
+                      className="h-12 bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
+                    >
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filters
+                      {showFilters ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                    </Button>
+                  )}
                   <Button 
                     onClick={fetchReservations} 
                     variant="outline" 
@@ -759,101 +900,17 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Advanced Filters */}
-              {showFilters && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700/50 animate-fade-in">
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm text-slate-400 whitespace-nowrap">Sorteer op:</label>
-                    <Select value={sortBy} onValueChange={(v) => setSortBy(v as "date" | "name" | "created")}>
-                      <SelectTrigger className="bg-slate-800/50 border-slate-700/50 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
-                        <SelectItem value="date">Datum</SelectItem>
-                        <SelectItem value="name">Naam</SelectItem>
-                        <SelectItem value="created">Aangemaakt</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                      className="text-slate-400 hover:text-white"
-                    >
-                      {sortOrder === "asc" ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                  <Input
-                    type="date"
-                    placeholder="Van datum"
-                    value={dateRange.from}
-                    onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
-                    className="bg-slate-800/50 border-slate-700/50 text-white"
-                  />
-                  <Input
-                    type="date"
-                    placeholder="Tot datum"
-                    value={dateRange.to}
-                    onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
-                    className="bg-slate-800/50 border-slate-700/50 text-white"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => setDateRange({ from: "", to: "" })}
-                    className="bg-slate-800/50 border-slate-700/50 text-slate-300 hover:bg-slate-700/50"
-                  >
-                    <X className="w-4 h-4 mr-2" />
-                    Reset
-                  </Button>
-                </div>
+              {!isMobile && showFilters && (
+                <div className="pt-4 border-t border-slate-700/50 animate-fade-in">{advancedFiltersContent}</div>
               )}
 
-              {/* Bulk Actions */}
-              {selectedReservations.size > 0 && (
-                <div className="flex items-center gap-2 pt-4 border-t border-slate-700/50 animate-fade-in">
-                  <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/40">
-                    {selectedReservations.size} geselecteerd
-                  </Badge>
-                  <Button
-                    size="sm"
-                    onClick={() => bulkUpdateStatus("confirmed")}
-                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
-                  >
-                    <CheckCircle2 className="w-4 h-4 mr-2" />
-                    Bevestig alle
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => bulkUpdateStatus("cancelled")}
-                    className="border-red-500/50 text-red-400 hover:bg-red-500/20"
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Annuleer alle
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={bulkDelete}
-                    className="border-red-500/50 text-red-400 hover:bg-red-500/20"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Verwijder alle
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setSelectedReservations(new Set())}
-                    className="text-slate-400"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
+              {!isMobile && bulkActionsContent && (
+                <div className="pt-4 border-t border-slate-700/50 animate-fade-in">{bulkActionsContent}</div>
               )}
 
               {/* View Mode Toggle */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-700/50">
-                <div className="flex gap-2">
+              <div className="flex flex-col gap-3 pt-4 border-t border-slate-700/50 md:flex-row md:items-center md:justify-between">
+                <div className="flex w-full flex-wrap gap-2 overflow-x-auto md:w-auto">
                   <Button
                     variant={viewMode === "cards" ? "default" : "outline"}
                     size="sm"
@@ -1518,6 +1575,14 @@ export default function AdminPage() {
             </TabsContent>
           ))}
         </Tabs>
+
+        {isMobile && bulkActionsContent && (
+          <div className="md:hidden fixed bottom-4 inset-x-4 z-40">
+            <Card className="border-slate-800/80 bg-slate-950/90 backdrop-blur-xl shadow-2xl">
+              <CardContent className="space-y-3">{bulkActionsContent}</CardContent>
+            </Card>
+          </div>
+        )}
       </main>
 
       {/* Command Palette */}
@@ -1836,4 +1901,24 @@ function CommandItem({
       )}
     </button>
   )
+}
+
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    const mediaQuery = window.matchMedia(query)
+    const handler = () => setMatches(mediaQuery.matches)
+
+    handler()
+    mediaQuery.addEventListener("change", handler)
+
+    return () => mediaQuery.removeEventListener("change", handler)
+  }, [query])
+
+  return matches
 }

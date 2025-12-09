@@ -69,3 +69,8 @@ This folder contains everything you need to deploy the production-ready Retell r
 - When the capacity check fails or the party is larger than 10, the webhook returns actionable text instructing the agent to hand off to a human (+31 6 24834382).
 - Logs are emitted server-side via `console.error` to aid monitoring (use Vercel/Logtail/Datadog to capture them in production).
 
+
+
+
+
+

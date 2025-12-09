@@ -1,0 +1,177 @@
+[
+  {
+    "name": "Successful Reservation - Happy Path",
+    "steps": [
+      {
+        "role": "user",
+        "content": "Hallo, ik wil graag reserveren"
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke naam mag ik de reservering noteren?"
+      },
+      {
+        "role": "user",
+        "content": "Jan de Vries"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw e-mailadres voor de bevestiging?"
+      },
+      {
+        "role": "user",
+        "content": "jan.devries@example.com"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw telefoonnummer zodat we u kunnen bereiken?"
+      },
+      {
+        "role": "user",
+        "content": "+31612345678"
+      },
+      {
+        "role": "assistant",
+        "content": "Voor hoeveel personen mag ik de tafel reserveren?"
+      },
+      {
+        "role": "user",
+        "content": "4 personen"
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke datum wilt u graag komen dineren?"
+      },
+      {
+        "role": "user",
+        "content": "Volgende week dinsdag"
+      },
+      {
+        "role": "assistant",
+        "content": "Welke tijd tussen 17:00 en 21:30 heeft u in gedachten?"
+      },
+      {
+        "role": "user",
+        "content": "19:00"
+      },
+      {
+        "role": "assistant",
+        "content": "Zijn er speciale verzoeken of allergieën waar we rekening mee moeten houden?"
+      },
+      {
+        "role": "user",
+        "content": "Nee, dat is alles"
+      },
+      {
+        "role": "assistant",
+        "content": "Dank u wel, ik heb uw tafel vastgelegd. U ontvangt een bevestiging per e-mail via ons systeem."
+      }
+    ]
+  },
+  {
+    "name": "Party Size > 10 - Handoff",
+    "steps": [
+      {
+        "role": "user",
+        "content": "Ik wil reserveren"
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke naam mag ik de reservering noteren?"
+      },
+      {
+        "role": "user",
+        "content": "Maria van der Berg"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw e-mailadres voor de bevestiging?"
+      },
+      {
+        "role": "user",
+        "content": "maria@example.com"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw telefoonnummer zodat we u kunnen bereiken?"
+      },
+      {
+        "role": "user",
+        "content": "+31698765432"
+      },
+      {
+        "role": "assistant",
+        "content": "Voor hoeveel personen mag ik de tafel reserveren?"
+      },
+      {
+        "role": "user",
+        "content": "12 personen"
+      },
+      {
+        "role": "assistant",
+        "content": "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 24834382. Zal ik u doorverbinden of liever het nummer toesturen?"
+      }
+    ]
+  },
+  {
+    "name": "Monday Booking - Rejection",
+    "steps": [
+      {
+        "role": "user",
+        "content": "Ik wil reserveren"
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke naam mag ik de reservering noteren?"
+      },
+      {
+        "role": "user",
+        "content": "Peter Jansen"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw e-mailadres voor de bevestiging?"
+      },
+      {
+        "role": "user",
+        "content": "peter@example.com"
+      },
+      {
+        "role": "assistant",
+        "content": "Mag ik uw telefoonnummer zodat we u kunnen bereiken?"
+      },
+      {
+        "role": "user",
+        "content": "+31611111111"
+      },
+      {
+        "role": "assistant",
+        "content": "Voor hoeveel personen mag ik de tafel reserveren?"
+      },
+      {
+        "role": "user",
+        "content": "2 personen"
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke datum wilt u graag komen dineren?"
+      },
+      {
+        "role": "user",
+        "content": "Maandag"
+      },
+      {
+        "role": "assistant",
+        "content": "Massawa is op maandag gesloten. Kies alstublieft een dag tussen dinsdag en zondag."
+      },
+      {
+        "role": "assistant",
+        "content": "Op welke datum wilt u graag komen dineren?"
+      },
+      {
+        "role": "user",
+        "content": "Dinsdag dan"
+      }
+    ]
+  }
+]

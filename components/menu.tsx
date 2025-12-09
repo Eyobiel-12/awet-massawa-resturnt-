@@ -3,8 +3,9 @@
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Leaf, Flame, Sparkles } from "lucide-react"
-import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Leaf, Flame, Sparkles, Search, X } from "lucide-react"
+import { useState, useMemo } from "react"
 
 const menuCategories = [
   {
@@ -450,301 +451,466 @@ const dessertCategories = [
 
 export function Menu() {
   const [activeTab, setActiveTab] = useState<"food" | "drinks" | "desserts">("food")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  // Filter menu items based on search
+  const filteredMenuCategories = useMemo(() => {
+    if (!searchQuery) return menuCategories
+
+    const query = searchQuery.toLowerCase()
+    return menuCategories
+      .map((category) => ({
+        ...category,
+        items: category.items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(query) ||
+            item.nameAmharic?.toLowerCase().includes(query) ||
+            item.description?.toLowerCase().includes(query) ||
+            item.badges?.some((badge) => badge.toLowerCase().includes(query))
+        ),
+      }))
+      .filter((category) => category.items.length > 0)
+  }, [searchQuery])
+
+  const allCategories = useMemo(() => {
+    return menuCategories.map((cat) => cat.title)
+  }, [])
 
   return (
-    <section id="menu" className="py-20 lg:py-32 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-sunset-amber/5 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-40 right-20 w-96 h-96 bg-sunset-coral/5 rounded-full blur-3xl animate-float-delayed" />
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-sunset-rose/5 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-sunset-amber/3 rounded-full blur-2xl animate-float-slow" />
+    <section id="menu" className="min-h-screen bg-background pt-24 pb-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-12 space-y-4">
+          <div className="inline-flex items-center justify-center mb-4">
+            <Sparkles className="w-8 h-8 text-amber-600" />
+          </div>
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground">
+            Our Menu
+          </h1>
+          <p className="text-lg text-foreground max-w-2xl mx-auto font-medium">
+            Discover authentic flavors from the Horn of Africa, crafted with traditional recipes and the finest ingredients
+          </p>
       </div>
 
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4 animate-fade-in-up">
-          <div className="inline-block">
-            <Sparkles className="w-8 h-8 text-sunset-amber mx-auto mb-4 animate-sparkle" />
+        {/* Search Bar */}
+        <div className="mb-8 max-w-2xl mx-auto">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search dishes, ingredients, or categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-12 h-14 text-base border-2 focus:border-amber-500 rounded-xl"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-amber-50 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
           </div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground text-balance">
-            Culinary Excellence
-          </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-            Each dish is a masterpiece, crafted with the finest ingredients and centuries-old traditions
-          </p>
         </div>
 
-        <div className="flex justify-center gap-4 mb-16 flex-wrap animate-fade-in-up animation-delay-200">
+        {/* Category Filter Pills (Mobile & Tablet) */}
+        {activeTab === "food" && !searchQuery && (
+          <div className="mb-8 md:hidden">
+            <div className="relative -mx-4 sm:-mx-6 px-4 sm:px-6">
+              <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-3 scrollbar-hide snap-x snap-mandatory scroll-smooth touch-pan-x">
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className={`flex-shrink-0 px-5 py-3 sm:px-6 sm:py-3.5 rounded-full text-sm sm:text-base font-semibold whitespace-nowrap transition-all duration-300 snap-start min-w-fit min-h-[44px] flex items-center justify-center ${
+                    selectedCategory === null
+                      ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg scale-105"
+                      : "bg-white text-foreground border-2 border-border active:border-amber-500 active:bg-amber-50 active:scale-95"
+                  }`}
+                >
+                  All
+                </button>
+                {allCategories.map((category) => {
+                  const shortName = category.split(" ")[0]
+                  const fullName = category.split(" & ")[0].split(" ")[0]
+                  const displayName = fullName.length <= 8 ? fullName : shortName
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setSelectedCategory(category)
+                        // Scroll to category section on mobile
+                        setTimeout(() => {
+                          const categoryIndex = menuCategories.findIndex(c => c.title === category)
+                          if (categoryIndex !== -1) {
+                            const element = document.getElementById(`category-${categoryIndex}`)
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }
+                          }
+                        }, 100)
+                      }}
+                      className={`flex-shrink-0 px-5 py-3 sm:px-6 sm:py-3.5 rounded-full text-sm sm:text-base font-semibold whitespace-nowrap transition-all duration-300 snap-start min-w-fit min-h-[44px] flex items-center justify-center ${
+                        selectedCategory === category
+                          ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg scale-105"
+                          : "bg-white text-foreground border-2 border-border active:border-amber-500 active:bg-amber-50 active:scale-95"
+                      }`}
+                    >
+                      {displayName}
+                    </button>
+                  )
+                })}
+              </div>
+              {/* Gradient fade indicators */}
+              <div className="absolute left-0 top-0 bottom-3 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none z-10" />
+              <div className="absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
+            </div>
+          </div>
+        )}
+
+        {/* Tab Navigation */}
+        <div className="flex justify-center gap-3 mb-12 flex-wrap">
           <Button
             variant={activeTab === "food" ? "default" : "outline"}
             size="lg"
-            onClick={() => setActiveTab("food")}
-            className={`px-8 py-6 text-base font-serif transition-all duration-500 hover:scale-105 hover:shadow-xl relative overflow-hidden group ${
+            onClick={() => {
+              setActiveTab("food")
+              setSearchQuery("")
+              setSelectedCategory(null)
+            }}
+            className={`px-6 py-3 text-base font-semibold transition-all ${
               activeTab === "food"
-                ? "bg-gradient-to-r from-sunset-amber via-sunset-coral to-sunset-amber bg-[length:200%_100%] animate-gradient shadow-sunset-amber/30"
-                : "hover:border-sunset-amber/50 hover:shadow-sunset-amber/20"
+                ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg hover:shadow-xl"
+                : "hover:border-amber-500"
             }`}
           >
-            <span className="relative z-10">Food Menu</span>
-            {activeTab !== "food" && (
-              <div className="absolute inset-0 bg-gradient-to-r from-sunset-amber/10 to-sunset-coral/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            )}
+            Food Menu
           </Button>
           <Button
             variant={activeTab === "drinks" ? "default" : "outline"}
             size="lg"
-            onClick={() => setActiveTab("drinks")}
-            className={`px-8 py-6 text-base font-serif transition-all duration-500 hover:scale-105 hover:shadow-xl relative overflow-hidden group ${
+            onClick={() => {
+              setActiveTab("drinks")
+              setSearchQuery("")
+              setSelectedCategory(null)
+            }}
+            className={`px-6 py-3 text-base font-semibold transition-all ${
               activeTab === "drinks"
-                ? "bg-gradient-to-r from-sunset-amber via-sunset-coral to-sunset-amber bg-[length:200%_100%] animate-gradient shadow-sunset-amber/30"
-                : "hover:border-sunset-amber/50 hover:shadow-sunset-amber/20"
+                ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg hover:shadow-xl"
+                : "hover:border-amber-500"
             }`}
           >
-            <span className="relative z-10">Beverages & Wines</span>
-            {activeTab !== "drinks" && (
-              <div className="absolute inset-0 bg-gradient-to-r from-sunset-amber/10 to-sunset-coral/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            )}
+            Beverages & Wines
           </Button>
           <Button
             variant={activeTab === "desserts" ? "default" : "outline"}
             size="lg"
-            onClick={() => setActiveTab("desserts")}
-            className={`px-8 py-6 text-base font-serif transition-all duration-500 hover:scale-105 hover:shadow-xl relative overflow-hidden group ${
+            onClick={() => {
+              setActiveTab("desserts")
+              setSearchQuery("")
+              setSelectedCategory(null)
+            }}
+            className={`px-6 py-3 text-base font-semibold transition-all ${
               activeTab === "desserts"
-                ? "bg-gradient-to-r from-sunset-amber via-sunset-coral to-sunset-amber bg-[length:200%_100%] animate-gradient shadow-sunset-amber/30"
-                : "hover:border-sunset-amber/50 hover:shadow-sunset-amber/20"
+                ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg hover:shadow-xl"
+                : "hover:border-amber-500"
             }`}
           >
-            <span className="relative z-10">Desserts</span>
-            {activeTab !== "desserts" && (
-              <div className="absolute inset-0 bg-gradient-to-r from-sunset-amber/10 to-sunset-coral/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            )}
+            Desserts
           </Button>
         </div>
 
-        {activeTab === "food" && (
-          <div className="space-y-24">
-            {menuCategories.map((category, categoryIndex) => (
-              <div
-                key={categoryIndex}
-                className="space-y-12 animate-fade-in-up"
-                style={{ animationDelay: `${categoryIndex * 100}ms` }}
+        {/* Desktop Category Filter */}
+        {activeTab === "food" && !searchQuery && (
+          <div className="hidden md:flex justify-center mb-12">
+            <div className="flex flex-wrap gap-3 justify-center max-w-4xl">
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className={`px-6 py-3 rounded-full text-base font-semibold whitespace-nowrap transition-all duration-300 ${
+                  selectedCategory === null
+                    ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg hover:shadow-xl"
+                    : "bg-white text-foreground border-2 border-border hover:border-amber-500 hover:bg-amber-50"
+                }`}
               >
-                <div className="text-center space-y-3">
-                  <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground animate-fade-in">
+                All Categories
+              </button>
+              {allCategories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-3 rounded-full text-base font-semibold whitespace-nowrap transition-all duration-300 ${
+                    selectedCategory === category
+                      ? "bg-gradient-to-r from-amber-600 to-orange-500 text-white shadow-lg hover:shadow-xl"
+                      : "bg-white text-foreground border-2 border-border hover:border-amber-500 hover:bg-amber-50"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Food Menu */}
+        {activeTab === "food" && (
+          <div className="space-y-16">
+            {(selectedCategory
+              ? filteredMenuCategories.filter((cat) => cat.title === selectedCategory)
+              : filteredMenuCategories
+            ).map((category, categoryIndex) => (
+              <div key={categoryIndex} className="scroll-mt-24" id={`category-${categoryIndex}`}>
+                <div className="text-center mb-10 space-y-3">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
                     {category.title}
-                  </h3>
-                  <p className="text-muted-foreground font-serif italic text-xl animate-fade-in animation-delay-100">
-                    {category.titleAmharic}
-                  </p>
-                  <Separator className="max-w-xs mx-auto mt-4 bg-gradient-to-r from-transparent via-sunset-amber to-transparent h-px animate-expand" />
+                  </h2>
+                  {category.titleAmharic && (
+                    <p className="text-foreground font-serif italic text-lg sm:text-xl font-medium">
+                      {category.titleAmharic}
+                    </p>
+                  )}
+                  <Separator className="max-w-xs mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent h-0.5" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {category.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="group relative bg-gradient-to-br from-card via-card to-card/90 backdrop-blur-md rounded-3xl p-8 border-2 border-border/40 hover:border-sunset-amber transition-all duration-700 hover:shadow-2xl hover:shadow-sunset-amber/30 hover:-translate-y-2 animate-fade-in-up overflow-hidden"
-                      style={{ animationDelay: `${itemIndex * 50}ms` }}
+                      className="group bg-white rounded-2xl p-6 border-2 border-border shadow-md hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 hover:-translate-y-1"
                     >
-                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-sunset-amber/0 via-sunset-coral/0 to-sunset-rose/0 group-hover:from-sunset-amber/10 group-hover:via-sunset-coral/10 group-hover:to-sunset-rose/10 transition-all duration-700 pointer-events-none" />
-                      
-                      {/* Shimmer effect */}
-                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-2000 ease-in-out" />
-                      </div>
-
-                      <div className="absolute top-0 left-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                        <div className="absolute top-4 left-4 w-8 h-0.5 bg-gradient-to-r from-sunset-amber to-transparent" />
-                        <div className="absolute top-4 left-4 w-0.5 h-8 bg-gradient-to-b from-sunset-amber to-transparent" />
-                      </div>
-                      <div className="absolute bottom-0 right-0 w-16 h-16 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                        <div className="absolute bottom-4 right-4 w-8 h-0.5 bg-gradient-to-l from-sunset-amber to-transparent" />
-                        <div className="absolute bottom-4 right-4 w-0.5 h-8 bg-gradient-to-t from-sunset-amber to-transparent" />
-                      </div>
-
-                      <div className="relative z-10">
-                        {/* Header with Name and Price */}
-                        <div className="flex items-start justify-between gap-4 mb-4">
-                          <div className="flex-1 space-y-2">
-                            <h4 className="font-serif text-2xl font-bold bg-gradient-to-r from-foreground via-foreground to-sunset-amber bg-clip-text text-transparent group-hover:from-foreground group-hover:via-sunset-amber group-hover:to-sunset-coral transition-all duration-700 bg-[length:200%_auto] animate-gradient-text leading-tight">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-serif text-xl font-bold text-foreground mb-1 group-hover:text-amber-600 transition-colors">
                               {item.name}
-                            </h4>
+                          </h3>
                             {item.nameAmharic && (
-                              <p className="text-base text-muted-foreground/80 font-serif italic group-hover:text-muted-foreground transition-colors duration-500">
+                            <p className="text-sm text-foreground font-serif italic font-medium">
                                 {item.nameAmharic}
                               </p>
                             )}
                           </div>
                           <div className="flex-shrink-0">
-                            <span className="font-serif text-2xl font-bold bg-gradient-to-br from-sunset-amber via-sunset-coral to-sunset-amber bg-clip-text text-transparent group-hover:scale-110 inline-block transition-transform duration-500">
+                          <span className="font-serif text-xl font-bold text-amber-600 whitespace-nowrap">
                               {item.price}
                             </span>
                           </div>
                         </div>
 
-                        {/* Description */}
                         {item.description && (
-                          <p className="text-muted-foreground leading-relaxed mb-4 text-base group-hover:text-foreground/90 transition-colors duration-500 line-clamp-3">
+                        <p className="text-sm text-foreground leading-relaxed mb-4 line-clamp-2 font-medium">
                             {item.description}
                           </p>
                         )}
 
                         {item.badges && item.badges.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border/40 group-hover:border-sunset-amber/40 transition-colors duration-500">
+                        <div className="flex flex-wrap gap-2">
                             {item.badges.map((badge, badgeIndex) => (
                               <Badge
                                 key={badgeIndex}
                                 variant="outline"
-                                className="bg-gradient-to-br from-background to-background/80 backdrop-blur-sm text-foreground border-sunset-amber/30 flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 transition-all duration-500 hover:bg-sunset-amber/15 hover:border-sunset-amber/50 hover:scale-105 hover:shadow-lg hover:shadow-sunset-amber/20"
+                              className="text-xs border-amber-500 bg-amber-100 text-foreground flex items-center gap-1 font-semibold"
                               >
                                 {badge.toLowerCase().includes("vegetarian") && (
-                                  <Leaf className="w-3.5 h-3.5 text-green-600 animate-pulse-slow" />
+                                <Leaf className="w-3 h-3 text-green-600" />
                                 )}
                                 {badge.toLowerCase().includes("spicy") && (
-                                  <Flame className="w-3.5 h-3.5 text-orange-600 animate-flicker" />
+                                <Flame className="w-3 h-3 text-orange-600" />
                                 )}
                                 {(badge.toLowerCase().includes("signature") ||
                                   badge.toLowerCase().includes("special")) && (
-                                  <Sparkles className="w-3.5 h-3.5 text-sunset-amber animate-sparkle" />
+                                <Sparkles className="w-3 h-3 text-amber-600" />
                                 )}
                                 {badge}
                               </Badge>
                             ))}
                           </div>
                         )}
-                      </div>
-
-                      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/80 transition-all duration-700 rounded-b-3xl">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                      </div>
-
-                      {/* Decorative corner accents */}
-                      <div className="absolute top-0 right-0 w-20 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-6 right-6 w-3 h-3 bg-gradient-to-br from-sunset-amber to-sunset-coral rounded-full animate-ping" />
-                        <div className="absolute top-6 right-6 w-3 h-3 bg-gradient-to-br from-sunset-amber to-sunset-coral rounded-full" />
-                      </div>
-                      
-                      {/* Hover glow effect */}
-                      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-br from-sunset-amber/5 via-transparent to-sunset-coral/5 rounded-3xl blur-xl" />
-                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
+
+            {filteredMenuCategories.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-foreground text-lg font-semibold">No dishes found matching your search.</p>
+              </div>
+            )}
           </div>
         )}
 
+        {/* Drinks Menu */}
         {activeTab === "drinks" && (
-          <div className="space-y-24">
+          <div className="space-y-16">
             {/* Traditional Beverages */}
-            <div className="space-y-12">
-              <div className="text-center space-y-3">
-                <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground animate-fade-in">
+            <div>
+              <div className="text-center mb-10 space-y-3">
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
                   Traditional Beverages
-                </h3>
-                <p className="text-muted-foreground font-serif italic text-xl animate-fade-in animation-delay-100">
+                </h2>
+                <p className="text-foreground font-serif italic text-lg sm:text-xl font-medium">
                   ባህላዊ መጠጦች
                 </p>
-                <Separator className="max-w-xs mx-auto mt-4 bg-gradient-to-r from-transparent via-sunset-amber to-transparent h-px animate-expand" />
+                <Separator className="max-w-xs mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent h-0.5" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {menuCategories
                   .find((cat) => cat.title === "Traditional Beverages")
                   ?.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="group relative bg-card rounded-xl p-8 border border-border/50 hover:border-sunset-amber/40 transition-all duration-500 hover:shadow-xl hover:shadow-sunset-amber/5"
+                      className="bg-white rounded-2xl p-6 border-2 border-border shadow-md hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300"
                     >
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div className="flex-1 space-y-2">
-                          <h4 className="font-serif text-2xl font-bold text-foreground leading-tight group-hover:text-sunset-amber transition-colors duration-300">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-serif text-xl font-bold text-foreground mb-1">
                             {item.name}
-                          </h4>
+                          </h3>
                           {item.nameAmharic && (
-                            <p className="text-base text-muted-foreground/80 font-serif italic">{item.nameAmharic}</p>
+                            <p className="text-sm text-foreground font-serif italic font-medium">
+                              {item.nameAmharic}
+                            </p>
                           )}
                         </div>
-                        <div className="flex-shrink-0">
-                          <span className="font-serif text-2xl font-bold text-sunset-amber">{item.price}</span>
-                        </div>
+                        <span className="font-serif text-xl font-bold text-amber-600 whitespace-nowrap">
+                          {item.price}
+                        </span>
                       </div>
                       {item.description && (
-                        <p className="text-muted-foreground leading-relaxed text-base">{item.description}</p>
+                        <p className="text-sm text-foreground leading-relaxed font-medium">
+                          {item.description}
+                        </p>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/30 transition-all duration-500" />
                     </div>
                   ))}
               </div>
             </div>
 
-            {/* Wine Selection */}
+            {/* Wine Categories */}
             {wineCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} className="space-y-12">
-                <div className="text-center space-y-3">
-                  <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{category.title}</h3>
-                  <p className="text-muted-foreground font-serif italic text-xl">{category.titleOriginal}</p>
-                  <Separator className="max-w-xs mx-auto mt-4 bg-gradient-to-r from-transparent via-sunset-amber to-transparent h-px" />
+              <div key={categoryIndex}>
+                <div className="text-center mb-10 space-y-3">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+                    {category.title}
+                  </h2>
+                  {category.titleOriginal && (
+                    <p className="text-foreground font-serif italic text-lg sm:text-xl font-medium">
+                      {category.titleOriginal}
+                    </p>
+                  )}
+                  <Separator className="max-w-xs mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent h-0.5" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {category.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="group relative bg-card rounded-xl p-8 border border-border/50 hover:border-sunset-amber/40 transition-all duration-500 hover:shadow-xl hover:shadow-sunset-amber/5"
+                      className="bg-white rounded-2xl p-6 border-2 border-border shadow-md hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300"
                     >
-                      <h4 className="font-serif text-2xl font-bold text-foreground leading-tight mb-4 group-hover:text-sunset-amber transition-colors duration-500">
+                      <h3 className="font-serif text-xl font-bold text-foreground mb-3">
                         {item.name}
-                      </h4>
+                      </h3>
                       {item.description && (
-                        <p className="text-muted-foreground leading-relaxed mb-6 text-base group-hover:text-foreground/80 transition-colors duration-500">
+                        <p className="text-sm text-foreground leading-relaxed mb-4 font-medium">
                           {item.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-6 pt-4 border-t border-border/30 group-hover:border-sunset-amber/20 transition-colors duration-500">
+                      <div className="flex items-center gap-6 pt-4 border-t border-border">
                         <div className="flex-1">
-                          <p className="text-sm text-muted-foreground mb-1 uppercase tracking-wide">Glass</p>
-                          <p className="font-serif text-xl font-bold text-sunset-amber">{item.priceGlass}</p>
+                          <p className="text-xs text-foreground mb-1 uppercase tracking-wide font-bold">Glass</p>
+                          <p className="font-serif text-lg font-bold text-amber-600">{item.priceGlass}</p>
                         </div>
-                        <Separator orientation="vertical" className="h-12 bg-border/50" />
+                        <Separator orientation="vertical" className="h-12" />
                         <div className="flex-1">
-                          <p className="text-sm text-muted-foreground mb-1 uppercase tracking-wide">Bottle</p>
-                          <p className="font-serif text-xl font-bold text-sunset-amber">{item.priceBottle}</p>
+                          <p className="text-xs text-foreground mb-1 uppercase tracking-wide font-bold">Bottle</p>
+                          <p className="font-serif text-lg font-bold text-amber-600">{item.priceBottle}</p>
                         </div>
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/30 transition-all duration-500" />
                     </div>
                   ))}
                 </div>
               </div>
             ))}
 
-            {/* Beer & Soft Drinks */}
+            {/* Beverage Categories */}
             {beverageCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} className="space-y-12">
-                <div className="text-center space-y-3">
-                  <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{category.title}</h3>
-                  <p className="text-muted-foreground font-serif italic text-xl">{category.titleOriginal}</p>
-                  <Separator className="max-w-xs mx-auto mt-4 bg-gradient-to-r from-transparent via-sunset-amber to-transparent h-px" />
+              <div key={categoryIndex}>
+                <div className="text-center mb-10 space-y-3">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+                    {category.title}
+                  </h2>
+                  {category.titleOriginal && (
+                    <p className="text-foreground font-serif italic text-lg sm:text-xl font-medium">
+                      {category.titleOriginal}
+                    </p>
+                  )}
+                  <Separator className="max-w-xs mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent h-0.5" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {category.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className="group relative bg-card rounded-lg p-6 border border-border/50 hover:border-sunset-amber/40 transition-all duration-500 hover:shadow-lg hover:shadow-sunset-amber/5"
+                      className="bg-white rounded-xl p-4 border-2 border-border shadow-md hover:border-amber-500 hover:shadow-lg transition-all duration-300"
                     >
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <h4 className="font-serif text-lg font-bold text-foreground leading-tight group-hover:text-sunset-amber transition-colors duration-500 flex-1">
+                      <div className="flex flex-col gap-2">
+                        <h4 className="font-serif text-base font-bold text-foreground leading-tight">
                           {item.name}
                         </h4>
-                        <span className="font-serif text-lg font-bold text-sunset-amber flex-shrink-0">
+                        <span className="font-serif text-lg font-bold text-amber-600">
+                          {item.price}
+                        </span>
+                        {item.description && (
+                          <p className="text-xs text-foreground leading-relaxed line-clamp-2 mt-1 font-medium">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Desserts Menu */}
+        {activeTab === "desserts" && (
+          <div className="space-y-16">
+            {dessertCategories.map((category, categoryIndex) => (
+              <div key={categoryIndex}>
+                <div className="text-center mb-10 space-y-3">
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+                    {category.title}
+                  </h2>
+                  {category.titleOriginal && (
+                    <p className="text-muted-foreground font-serif italic text-lg sm:text-xl">
+                      {category.titleOriginal}
+                    </p>
+                  )}
+                  <Separator className="max-w-xs mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent h-0.5" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {category.items.map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white rounded-2xl p-6 border-2 border-border shadow-md hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300"
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-serif text-xl font-bold text-foreground mb-1">
+                            {item.name}
+                          </h3>
+                          {item.nameEnglish && (
+                            <p className="text-sm text-foreground italic font-medium">({item.nameEnglish})</p>
+                          )}
+                        </div>
+                        <span className="font-serif text-xl font-bold text-amber-600 whitespace-nowrap">
                           {item.price}
                         </span>
                       </div>
                       {item.description && (
-                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{item.description}</p>
+                        <p className="text-sm text-foreground leading-relaxed font-medium">
+                          {item.description}
+                        </p>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/30 transition-all duration-500" />
                     </div>
                   ))}
                 </div>
@@ -753,239 +919,26 @@ export function Menu() {
           </div>
         )}
 
-        {activeTab === "desserts" && (
-          <div className="space-y-24">
-            {dessertCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} className="space-y-12">
-                <div className="text-center space-y-3">
-                  <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{category.title}</h3>
-                  {category.titleOriginal && (
-                    <p className="text-muted-foreground font-serif italic text-xl">{category.titleOriginal}</p>
-                  )}
-                  <Separator className="max-w-xs mx-auto mt-4 bg-gradient-to-r from-transparent via-sunset-amber to-transparent h-px" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                  {category.items.map((item, itemIndex) => (
-                    <div
-                      key={itemIndex}
-                      className="group relative bg-card rounded-xl p-8 border border-border/50 hover:border-sunset-amber/40 transition-all duration-500 hover:shadow-xl hover:shadow-sunset-amber/5"
-                    >
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div className="flex-1 space-y-2">
-                          <h4 className="font-serif text-xl font-bold text-foreground leading-tight group-hover:text-sunset-amber transition-colors duration-500">
-                            {item.name}
-                          </h4>
-                          {item.nameEnglish && (
-                            <p className="text-sm text-muted-foreground/80 italic">({item.nameEnglish})</p>
-                          )}
-                        </div>
-                        <div className="flex-shrink-0">
-                          <span className="font-serif text-xl font-bold text-sunset-amber">{item.price}</span>
-                        </div>
-                      </div>
-                      {item.description && (
-                        <p className="text-muted-foreground leading-relaxed text-sm">{item.description}</p>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sunset-amber/0 to-transparent group-hover:via-sunset-amber/30 transition-all duration-500" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="text-center mt-20 pt-16 border-t border-border/50 animate-fade-in-up animation-delay-500">
+        {/* Footer CTA */}
+        <div className="text-center mt-20 pt-16 border-t border-border/50">
           <div className="max-w-2xl mx-auto space-y-6">
-            <Sparkles className="w-10 h-10 text-sunset-amber mx-auto animate-sparkle" />
-            <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground">Experience Authentic Flavors</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              All dishes are prepared fresh to order using traditional recipes passed down through generations and the
-              finest ingredients sourced from the Horn of Africa
+            <Sparkles className="w-10 h-10 text-amber-600 mx-auto" />
+            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
+              Experience Authentic Flavors
+            </h3>
+            <p className="text-foreground leading-relaxed font-medium">
+              All dishes are prepared fresh to order using traditional recipes passed down through generations
             </p>
             <Button
               size="lg"
               variant="outline"
-              className="text-base px-10 py-6 h-auto bg-transparent border-sunset-amber/30 hover:bg-sunset-amber/10 hover:border-sunset-amber transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-sunset-amber/30 font-serif group relative overflow-hidden"
+              className="border-2 border-amber-500 hover:bg-amber-50 text-foreground font-semibold px-8 py-6 h-auto"
             >
-              <span className="relative z-10">Download Full Menu (PDF)</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-sunset-amber/0 via-sunset-amber/20 to-sunset-amber/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              Reserve Your Table
             </Button>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes expand {
-          from {
-            transform: scaleX(0);
-          }
-          to {
-            transform: scaleX(1);
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-20px) translateX(10px);
-          }
-        }
-
-        @keyframes float-delayed {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(20px) translateX(-10px);
-          }
-        }
-
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translateY(0) translateX(0) scale(1);
-          }
-          50% {
-            transform: translateY(-15px) translateX(15px) scale(1.1);
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% {
-            opacity: 0.3;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: scale(1.05);
-          }
-        }
-
-        @keyframes sparkle {
-          0%, 100% {
-            opacity: 1;
-            transform: rotate(0deg) scale(1);
-            filter: drop-shadow(0 0 8px currentColor);
-          }
-          50% {
-            opacity: 0.8;
-            transform: rotate(180deg) scale(1.1);
-            filter: drop-shadow(0 0 16px currentColor);
-          }
-        }
-
-        @keyframes flicker {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.7;
-          }
-        }
-
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-
-        @keyframes gradient-text {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-
-        .animate-gradient-text {
-          animation: gradient-text 3s ease infinite;
-          background-size: 200% auto;
-        }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
-
-        .animate-expand {
-          animation: expand 0.8s ease-out forwards;
-        }
-
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
-        }
-
-        .animate-float-delayed {
-          animation: float-delayed 10s ease-in-out infinite;
-        }
-
-        .animate-float-slow {
-          animation: float-slow 12s ease-in-out infinite;
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-
-        .animate-sparkle {
-          animation: sparkle 3s ease-in-out infinite;
-        }
-
-        .animate-flicker {
-          animation: flicker 1.5s ease-in-out infinite;
-        }
-
-        .animate-gradient {
-          animation: gradient 3s ease infinite;
-        }
-
-        .animation-delay-100 {
-          animation-delay: 100ms;
-        }
-
-        .animation-delay-200 {
-          animation-delay: 200ms;
-        }
-
-        .animation-delay-500 {
-          animation-delay: 500ms;
-        }
-      `}</style>
     </section>
   )
 }

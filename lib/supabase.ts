@@ -32,6 +32,8 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
   global: {
     headers: {
       "x-client-info": "massawa-restaurant@1.0.0",
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${supabaseAnonKey}`,
     },
   },
 })
