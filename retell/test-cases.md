@@ -37,7 +37,7 @@
    - User: "12 personen"
 
 **Expected Result:**
-- Agent: "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 24834382. Zal ik u doorverbinden of liever het nummer toesturen?"
+- Agent: "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 34440775. Zal ik u doorverbinden of liever het nummer toesturen?"
 - No webhook call (handoff before booking)
 
 ---

@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       reservation_message: message || "Geen speciale verzoeken",
       restaurant_name: "Massawa Restaurant",
       restaurant_address: "Amsterdamsestraatweg 54, 3513 AG Utrecht",
-      restaurant_phone: "+31 6 24834382",
+      restaurant_phone: "+31 6 34440775",
       restaurant_email: "info@massawa-restaurant.nl",
       email: email,
     }

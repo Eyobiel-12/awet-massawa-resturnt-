@@ -15,7 +15,7 @@
   },
   "metadata": {
     "restaurant_name": "Massawa",
-    "phone": "+31 6 24834382",
+    "phone": "+31 6 34440775",
     "address": "Amsterdamsestraatweg 54, 3513 AG Utrecht",
     "time_zone": "Europe/Amsterdam",
     "dining_window_minutes": 90
@@ -35,7 +35,7 @@
       "party_size": {
         "min": 1,
         "max": 10,
-        "handoff_message": "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 24834382."
+        "handoff_message": "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 34440775."
       },
       "date": {
         "open_days": [
@@ -70,7 +70,7 @@
     "handoff_prompt_en": "No worries, I can connect you with a Massawa team member. Would you like to speak to someone?"
   },
   "handoff": {
-    "phone_number": "+31 6 24834382",
+    "phone_number": "+31 6 34440775",
     "offer_sms": true,
     "scenarios": [
       "Party larger than 10",

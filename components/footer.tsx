@@ -57,7 +57,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs sm:text-sm text-background/70">
               <li>Amsterdamsestraatweg 54</li>
               <li>3513 AG Utrecht</li>
-              <li>+31 6 24834382</li>
+              <li>+31 6 34440775</li>
               <li>info@massawa-restaurant.nl</li>
             </ul>
           </div>
