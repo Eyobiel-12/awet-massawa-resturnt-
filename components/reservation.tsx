@@ -63,13 +63,13 @@ export function Reservation() {
       return "Je kunt geen reservering maken voor een datum in het verleden"
     }
     
-    // Check if date is more than 7 days in the future
+    // Check if date is more than 30 days in the future
     const maxDate = new Date(today)
-    maxDate.setDate(maxDate.getDate() + 7)
+    maxDate.setDate(maxDate.getDate() + 30)
     maxDate.setHours(23, 59, 59, 999)
     
     if (selectedDate > maxDate) {
-      return "Reserveringen kunnen alleen worden gemaakt voor de komende 7 dagen"
+      return "Reserveringen kunnen alleen worden gemaakt voor de komende 30 dagen"
     }
     
     // Restaurant is open 7 days a week - no closed days check needed
@@ -550,7 +550,7 @@ export function Reservation() {
                           min={new Date().toISOString().split('T')[0]}
                           max={(() => {
                             const maxDate = new Date()
-                            maxDate.setDate(maxDate.getDate() + 7)
+                            maxDate.setDate(maxDate.getDate() + 30)
                             return maxDate.toISOString().split('T')[0]
                           })()}
                           className={`h-12 border-2 transition-all duration-300 focus:shadow-lg bg-white/50 dark:bg-background/50 backdrop-blur-sm hover:bg-white/70 focus:scale-[1.01] ${
