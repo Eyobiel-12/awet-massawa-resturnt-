@@ -7,7 +7,6 @@ const MAX_TABLES = 10
 const OPENING_MINUTES = 17 * 60 // 17:00
 const LAST_SEATING_MINUTES = 21 * 60 + 30 // 21:30
 const DINING_WINDOW_MINUTES = 90
-const CLOSED_WEEKDAY = 1 // Monday
 
 const reservationSchema = z.object({
   name: z.string().min(2),
@@ -134,18 +133,6 @@ function validateBusinessRules(payload: ReservationPayload) {
       response: {
         status: "validation_failed",
         message: "Ongeldige datum opgegeven.",
-      },
-    }
-  }
-
-  const weekday = requestedDate.getUTCDay()
-  if (weekday === CLOSED_WEEKDAY) {
-    return {
-      isValid: false,
-      status: 409,
-      response: {
-        status: "closed",
-        message: "Massawa is op maandag gesloten. Kies een dag tussen dinsdag en zondag.",
       },
     }
   }

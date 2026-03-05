@@ -68,7 +68,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs sm:text-sm text-background/70">
               <li>Tuesday - Sunday</li>
               <li>17:00 - 23:00</li>
-              <li className="pt-2">Monday: Closed</li>
+              <li className="pt-2">Monday - Sunday: 17:00 - 23:00</li>
             </ul>
           </div>
         </div>

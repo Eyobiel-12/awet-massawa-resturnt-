@@ -19,7 +19,7 @@ const contactInfo = [
   {
     icon: Clock,
     title: "Opening Hours",
-    details: ["Tuesday - Sunday: 17:00 - 23:00", "Monday: Closed", "Kitchen closes at 22:00"],
+    details: ["Monday - Sunday: 17:00 - 23:00", "Kitchen closes at 22:00"],
   },
 ]
 
