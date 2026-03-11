@@ -66,7 +66,7 @@ export function Footer() {
           <div className="text-center sm:text-left">
             <h3 className="font-serif text-base sm:text-lg font-bold mb-3 sm:mb-4">Opening Hours</h3>
             <ul className="space-y-2 text-xs sm:text-sm text-background/70">
-              <li>Monday – Sunday: 17:00 – 23:00</li>
+              <li>Monday – Sunday: 16:00 – 23:00</li>
               <li className="pt-2">Kitchen opens at 16:00</li>
             </ul>
           </div>
