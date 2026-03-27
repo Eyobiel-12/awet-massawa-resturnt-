@@ -116,7 +116,7 @@ function validatePartySize(partySize: number) {
       response: {
         status: "requires_handoff",
         message:
-          "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 34440775.",
+          "Voor groepen groter dan tien personen helpt ons team u graag persoonlijk via +31 6 24834382.",
       },
     }
   }
